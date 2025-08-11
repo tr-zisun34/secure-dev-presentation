@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Software Development Practices</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .presentation-container {
+            width: 90%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .slide {
+            padding: 40px;
+            min-height: 600px;
+            display: none;
+            position: relative;
+            background: white;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .slide h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .slide h2 {
+            color: #34495e;
+            font-size: 2em;
+            margin-bottom: 15px;
+            margin-top: 25px;
+        }
+
+        .slide h3 {
+            color: #2980b9;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+
+        .slide p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .slide ul, .slide ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .slide li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+
+        .example-box {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .example-box::before {
+            content: "💡 Example";
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #fff;
+            padding: 0 10px;
+            color: #2980b9;
+            font-weight: bold;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .warning-box::before {
+            content: "⚠️ Important";
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #fff;
+            padding: 0 10px;
+            color: #e17055;
+            font-weight: bold;
+        }
+
+        .navigation {
+            background: #2c3e50;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .nav-button:hover {
+            background: #2980b9;
+        }
+
+        .nav-button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            color: white;
+            font-weight: bold;
+        }
+
+        .security-icon {
+            font-size: 3em;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .process-flow {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .process-step {
+            background: #3498db;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 50px;
+            margin: 10px;
+            text-align: center;
+            min-width: 120px;
+            position: relative;
+        }
+
+        .process-step::after {
+            content: "→";
+            position: absolute;
+            right: -30px;
+            color: #3498db;
+            font-size: 1.5em;
+        }
+
+        .process-step:last-child::after {
+            display: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            display: block;
+        }
+
+        .principle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .principle-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            transition: transform 0.3s;
+        }
+
+        .principle-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .principle-title {
+            color: #2980b9;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 20px;
+                min-height: auto;
+            }
+            
+            .slide h1 {
+                font-size: 2em;
+            }
+            
+            .process-flow {
+                flex-direction: column;
+            }
+            
+            .process-step::after {
+                content: "↓";
+                right: auto;
+                bottom: -30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Title Slide -->
+        <div class="slide active" style="background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%); position: relative; overflow: hidden;">
+            <!-- Decorative circles -->
+            <div style="position: absolute; left: -60px; top: -60px; width: 180px; height: 180px; background: radial-gradient(circle, #a7c7e7 60%, transparent 100%); border-radius: 50%; z-index: 0;"></div>
+            <div style="position: absolute; right: -40px; bottom: -40px; width: 120px; height: 120px; background: radial-gradient(circle, #f7cac9 60%, transparent 100%); border-radius: 50%; z-index: 0;"></div>
+            <div style="position: absolute; left: 40%; top: 80px; width: 80px; height: 80px; background: radial-gradient(circle, #b2f7ef 60%, transparent 100%); border-radius: 50%; z-index: 0;"></div>
+            <!-- Slide content -->
+            <div style="position: relative; z-index: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                    <div>
+                        <span style="font-size: 1.2em; font-weight: 600; color: #2d2d2d; letter-spacing: 1px;">Institute of Information Technology</span>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 1em; color: #444;">11 August 2025</span>
+                    </div>
+                </div>
+                <h1 style="font-size: 2.2em; margin-bottom: 0.2em; color: #2c3e50; text-shadow: 1px 1px 6px #e0eafc;">Recommended Practices</h1>
+                <h2 style="font-size: 1.3em; color: #444; font-weight: 500; margin-bottom: 16px;">for Secure Software Development</h2>
+                <div style="display: flex; justify-content: space-between; margin-top: 32px;">
+                    <div style="background: #f7cac9; border-radius: 12px; padding: 16px 20px; box-shadow: 0 2px 8px #cfdef3;">
+                        <div style="font-size: 1em; color: #222; font-weight: 600; margin-bottom: 8px;">presented by:</div>
+                        <div style="font-size: 1em; color: #222;">
+                            Md. Jihad Hossain (1413)<br>
+                            Md. Kamrul Hasan (1418)<br>
+                            Md. Jariful Rahman (1419)<br>
+                            Md. Kibria Hossen (1430)<br>
+                            Md. Touhidur Rahman (1434)
+                        </div>
+                    </div>
+                    <div style="text-align: right; background: #b2f7ef; border-radius: 12px; padding: 16px 20px; box-shadow: 0 2px 8px #cfdef3;">
+                        <div style="font-size: 1em; color: #222; font-weight: 600;">presented To:</div>
+                        <div style="font-size: 1em; color: #222; font-weight: 700;">Mohammed Shafiul Alam Khan</div>
+                        <div style="font-size: 1em; color: #222;">Professor<br>IIT, University of Dhaka</div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 32px;">
+                    <div style="background: #e0eafc; border-radius: 12px; padding: 16px 20px; box-shadow: 0 2px 8px #cfdef3;">
+                        <div style="font-size: 1em; color: #222;">Presentation of:</div>
+                        <div style="font-size: 1.1em; color: #0077c2; font-weight: 700;">Software Security SE 612</div>
+                        <div style="font-size: 1em; color: #222;">Group ID: 11</div>
+                        <div style="font-size: 1em; color: #0077c2; font-weight: 700;">c7b3r_t3rr0r1st</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Objectives & Agenda -->
+        <div class="slide">
+            <h1>Objectives & Agenda</h1>
+            <h2>📚 Learning Objectives</h2>
+            <ul>
+                <li><strong>Understand the Security Development Lifecycle (SDL)</strong> and its proven origins in industry</li>
+                <li><strong>Learn practical secure coding techniques</strong> that prevent common vulnerabilities</li>
+                <li><strong>Master verification methods</strong> to catch security flaws before deployment</li>
+                <li><strong>Explore strategies</strong> to reduce attack surface and minimize risk exposure</li>
+            </ul>
+            
+            <h2>🗓️ Session Agenda</h2>
+            <div class="process-flow">
+                <div class="process-step">Introduction</div>
+                <div class="process-step">Requirements</div>
+                <div class="process-step">Design</div>
+                <div class="process-step">Implementation</div>
+                <div class="process-step">Verification</div>
+                <div class="process-step">Summary</div>
+            </div>
+            
+            <div class="example-box">
+                <p><strong>Why This Matters:</strong> Companies implementing SDL have seen vulnerability reductions of up to 90% in their software products!</p>
+            </div>
+        </div>
+
+        <!-- Slide 3: What is Recommended Practice -->
+        <div class="slide">
+            <h1>What is "Recommended Practice"?</h1>
+            
+            
+            <h2>Core Definition</h2>
+            <div class="highlight">
+                <p><strong>Evidence-based, repeatable techniques that measurably improve software security</strong> through systematic application across development phases.</p>
+            </div>
+            
+            <h3>Key Characteristics:</h3>
+            <ul>
+                <li><strong>📊 Evidence-Based:</strong> Backed by real-world data and industry studies</li>
+                <li><strong>🔄 Repeatable:</strong> Can be consistently applied across different projects and teams</li>
+                <li><strong>📈 Measurable:</strong> Produces quantifiable improvements in security posture</li>
+                <li><strong>⚡ Proactive:</strong> Prevents vulnerabilities rather than fixing them post-deployment</li>
+            </ul>
+            
+            <div class="warning-box">
+                <p><strong>The Goal:</strong> Transform security from an afterthought into an integrated, proactive component of every development decision.</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: History & Origin -->
+        <div class="slide">
+            <h1>History & Evolution of SDL</h1>
+            
+            <h2>📅 Timeline of Development</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">2004</span>
+                    Microsoft Adopts SDL
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">90%</span>
+                    Vulnerability Reduction
+                </div>
+                <!-- <div class="stat-card">
+                    <span class="stat-number">2006+</span>
+                    CERT Expansion
+                </div> -->
+            </div>
+            
+            <h3>🏢 Microsoft's Revolutionary Approach (2004)</h3>
+            <div class="example-box">
+                <p><strong>The Catalyst:</strong> Following major security incidents, Microsoft mandated SDL across all product teams. This wasn't optional - it became a core business requirement.</p>
+                <ul>
+                    <li>Mandatory process for all development teams</li>
+                    <li>Measurable drop in exploitable vulnerabilities</li>
+                    <li>Established security as a competitive advantage</li>
+                </ul>
+            </div>
+            
+            <h3>🎓 CERT's Industry Adaptation</h3>
+            <p>Carnegie Mellon's Software Engineering Institute (SEI) recognized the broader applicability:</p>
+            <ul>
+                <li><strong>Extended practices</strong> beyond Microsoft's internal use</li>
+                <li><strong>Industry-wide adoption</strong> across different sectors</li>
+                <li><strong>Simplified models</strong> for organizations of all sizes</li>
+            </ul>
+        </div>
+
+        <!-- Slide 5: SDL Overview -->
+        <div class="slide">
+            <h1>Security Development Lifecycle (SDL)</h1>
+            
+            <div class="highlight">
+                <p><strong>Definition:</strong> A security assurance process that integrates security practices into every phase of software development, regardless of the underlying methodology.</p>
+            </div>
+            
+            <h2>🔧 Process-Agnostic Framework</h2>
+            <p>SDL works seamlessly with any development model:</p>
+            <div class="process-flow">
+                <div class="process-step">Agile</div>
+                <div class="process-step">Waterfall</div>
+                <div class="process-step">Spiral</div>
+            </div>
+            
+            <h2>📋 SDL Phases</h2>
+            <div class="principle-grid">
+                <div class="principle-card">
+                    <div class="principle-title">🎓 Training</div>
+                    <p>Core security training for all developers and stakeholders</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">📋 Requirements</div>
+                    <p>Establish security requirements and define quality gates</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🏗️ Design</div>
+                    <p>Attack surface analysis and comprehensive threat modeling</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">💻 Implementation</div>
+                    <p>Approved tools usage and unsafe function deprecation</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">✅ Verification</div>
+                    <p>Static/dynamic analysis, fuzzing, and surface reviews</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🚀 Release</div>
+                    <p>Final security review and comprehensive release archive</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🚨 Response</div>
+                    <p>Incident response planning and execution protocols</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Evidence of Impact -->
+        <div class="slide">
+            <h1>Proven Results: Evidence of Impact</h1>
+            
+            <div class="security-icon">📊</div>
+            
+            <h2>🏢 Microsoft Office Case Study</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">126</span>
+                    Vulnerabilities (2003)
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">7</span>
+                    Vulnerabilities (2010)
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">94%</span>
+                    Reduction Achieved
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <p><strong>Real-World Impact:</strong> Microsoft Office experienced a dramatic 94% reduction in exploitable vulnerabilities after implementing SDL - from 126 in 2003 to just 7 in 2010.</p>
+            </div>
+            
+            <h2>💰 Return on Investment (ROI)</h2>
+            <ul>
+                <li><strong>Reduced post-release patching costs</strong> by up to 80%</li>
+                <li><strong>Decreased security incident response</strong> time and resources</li>
+                <li><strong>Enhanced customer trust</strong> and market reputation</li>
+                <li><strong>Compliance benefits</strong> with regulatory requirements</li>
+            </ul>
+        </div>
+
+        <!-- Slide 7: TSP-Secure -->
+        <div class="slide">
+            <h1>TSP-Secure Framework</h1>
+            
+            <div class="highlight">
+                <p><strong>TSP-Secure</strong> is an extension of the Team Software Process (TSP) specifically designed to enhance security throughout software development.</p>
+            </div>
+            
+            <h2>🎯 Addressing Common Problems</h2>
+            <div class="warning-box">
+                <p><strong>Problems TSP-Secure Solves:</strong></p>
+                <ul>
+                    <li>Lack of clear security goals and objectives</li>
+                    <li>Unclear roles and responsibilities for security</li>
+                    <li>Security treated as an afterthought</li>
+                    <li>Inconsistent security practices across teams</li>
+                </ul>
+            </div>
+            
+            <h2>🔍 Focus Areas</h2>
+            <div class="principle-grid">
+                <div class="principle-card">
+                    <div class="principle-title">📋 Planning and Tracking</div>
+                    <p>Teams establish secure coding standards and select appropriate security tools from project inception</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">⭐ Quality Management</div>
+                    <p>Implements multiple defect removal filters throughout the entire development lifecycle</p>
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <p><strong>Team Integration Example:</strong> A development team using TSP-Secure might start each sprint by reviewing security requirements, selecting appropriate static analysis tools, and assigning security champions to each feature team.</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Quality Management -->
+        <div class="slide">
+            <h1>Quality Management: Defense in Depth</h1>
+            
+            <div class="security-icon">🛡️</div>
+            
+            <div class="highlight">
+                <p><strong>Concept:</strong> Multiple "defect removal filters" strategically placed throughout the software development lifecycle to catch and eliminate security vulnerabilities.</p>
+            </div>
+            
+            <h2>🔍 The Filter System</h2>
+            <p>Each development activity acts as a security filter:</p>
+            
+            <div class="process-flow">
+                <div class="process-step">Requirements<br>Activities</div>
+                <div class="process-step">Design<br>Activities</div>
+                <div class="process-step">Implementation<br>Activities</div>
+            </div>
+            
+            <h3>📈 Cumulative Effectiveness</h3>
+            <div class="example-box">
+                <p><strong>Mathematical Impact:</strong> If each filter removes 50% of remaining defects:</p>
+                <ul>
+                    <li>After Filter 1: 50 vulnerabilities remaining (from 100)</li>
+                    <li>After Filter 2: 25 vulnerabilities remaining</li>
+                    <li>After Filter 3: 12-13 vulnerabilities remaining</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 9: Security Training -->
+        <div class="slide">
+                <h1>Security Training</h1>
+                <div class="security-icon">🎓</div>
+                <div class="highlight">
+                    <p><strong>Education plays a critical role in addressing the cybersecurity challenges of the future.</strong> Integrating secure programming principles and practices into educational programs is essential.</p>
+                </div>
+                <h2>🔑 Summit & Recommendations</h2>
+                <ul>
+                    <li>NSF sponsored the Summit on Education in Secure Software (SESS) to develop roadmaps for secure programming education.</li>
+                    <li>Ten recommendations were made, including:
+                        <ul>
+                            <li><strong>Require at least one computer security course for all college students:</strong>
+                                <ul>
+                                    <li>For CS students: Focus on technical topics and secure design principles.</li>
+                                    <li>For non-CS students: Raise awareness of basic computer security concepts.</li>
+                                </ul>
+                            </li>
+                            <li>Use innovative teaching methods to strengthen security knowledge.</li>
+                        </ul>
+                    </li>
+                </ul>
+                <h2>📌 Key Points</h2>
+                <ul>
+                    <li>Growing demand for secure software developers</li>
+                    <li>Need for increased capacity and quality in secure coding education</li>
+                    <li>Effective secure coding requires theory, language expertise, and practical application</li>
+                </ul>
+                <div class="example-box">
+                    <p><strong>Example:</strong> CMU's "Secure Programming" and "Secure Software Engineering" courses are models for integrating security into computer science education.</p>
+                </div>
+            </div>
+
+        <!-- Slide 10: SQUARE Methodology -->
+        <div class="slide">
+            <h1>SQUARE Methodology: Nine Steps</h1>
+            
+            <div class="highlight">
+                <p><strong>SQUARE (Security Quality Requirements Engineering):</strong> A systematic nine-step process for defining and eliciting comprehensive security requirements.</p>
+            </div>
+
+            <h2>🔢 Complete Nine-Step Process</h2>
+            <div class="principle-grid">
+                <div class="principle-card">
+                    <div class="principle-title">1. Agree on Definitions</div>
+                    <p>Establish common terminology from sources like RFC 4949 to prevent miscommunication among team members with different backgrounds.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">2. Identify Assets & Security Goals</div>
+                    <p>Define what needs protection and associated security objectives for different stakeholders (e.g., HR focuses on personnel data confidentiality).</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">3. Develop Artifacts</div>
+                    <p>Create documentation including concept of operations, project goals, usage scenarios, threat scenarios, and misuse cases.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">4. Perform Risk Assessment</div>
+                    <p>Select appropriate risk assessment methods using artifacts from step 3. Threat modeling supports this process to identify high-priority exposures.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">5. Select Elicitation Technique</div>
+                    <p>Choose appropriate method based on stakeholder diversity (structured interviews for cultural differences, ARM for most successful results).</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">6. Elicit Security Requirements</div>
+                    <p>Apply the selected requirements elicitation technique following detailed guidance provided by the chosen method.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">7. Categorize Requirements</div>
+                    <p>Distinguish between essential requirements, goals (desired requirements), and architectural constraints to support prioritization.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">8. Prioritize Requirements</div>
+                    <p>Use cost/benefit analysis and methods like Analytical Hierarchical Process (AHP) with pairwise comparisons for effective prioritization.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">9. Requirements Inspection</div>
+                    <p>Perform formal inspection (Fagan inspections most effective) to produce final set of prioritized security requirements.</p>
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <p><strong>E-commerce Example - Complete 9 Steps:</strong></p>
+                <ul>
+                    <li><strong>Step 1:</strong> Define "customer data" to include payment info, addresses, purchase history</li>
+                    <li><strong>Step 2:</strong> Identify customer database as critical asset with confidentiality goals</li>
+                    <li><strong>Step 3:</strong> Create data flow diagrams showing payment processing flow</li>
+                    <li><strong>Step 4:</strong> Assess SQL injection risks in payment forms using OWASP methodology</li>
+                    <li><strong>Step 5:</strong> Use structured interviews with diverse stakeholder teams (IT, business, security)</li>
+                    <li><strong>Step 6:</strong> Conduct interviews to gather requirements like "Payment data must be encrypted in transit and at rest"</li>
+                    <li><strong>Step 7:</strong> Categorize as essential (PCI compliance) vs. desired (fraud detection)</li>
+                    <li><strong>Step 8:</strong> Prioritize encryption requirements over advanced analytics based on regulatory compliance costs</li>
+                    <li><strong>Step 9:</strong> Perform Fagan inspection to validate final security requirements list</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 11: Use Cases & Misuse Cases -->
+        <div class="slide">
+            <h2>Use Cases & Misuse Cases</h2>
+
+            <h3>✅ Use Cases</h3>
+            <div class="highlight">
+                <p><strong>Use Case:</strong> Describes the standard, desired interaction between a user and the system under normal, legitimate circumstances.</p>
+            </div>
+
+            <h3>❌ Misuse Cases</h3>
+            <div class="warning-box">
+                <p><strong>Misuse Case:</strong> Documents potential threats by describing interactions from an attacker's perspective - how the system might be exploited or abused.</p>
+            </div>
+            
+            <h3>🔄 Comparative Analysis</h3>
+            <div class="stats-grid">
+                <div class="stat-card" style="background: linear-gradient(45deg, #4CAF50, #45a049);">
+                    <div style="font-size: 1.2em; font-weight: bold;">USE CASE</div>
+                    Normal User Behavior
+                </div>
+                <div class="stat-card" style="background: linear-gradient(45deg, #f44336, #d32f2f);">
+                    <div style="font-size: 1.2em; font-weight: bold;">MISUSE CASE</div>
+                    Attacker Behavior
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <p><strong>Banking System Example:</strong></p>
+                <p><strong>Use Case:</strong> "Customer logs in with valid credentials, views account balance, transfers money to authorized account"</p>
+                <p><strong>Misuse Case:</strong> "Attacker intercepts login credentials, performs unauthorized transfers, covers tracks by modifying transaction logs"</p>
+            </div>
+            
+            <h3>💡 Strategic Benefits</h3>
+            <ul>
+                <li><strong>Proactive Threat Identification:</strong> Discover vulnerabilities before attackers do</li>
+                <li><strong>Security Requirement Prioritization:</strong> Focus resources on highest-risk scenarios</li>
+                <li><strong>Defense Strategy Development:</strong> Build specific countermeasures for identified threats</li>
+            </ul>
+        </div>
+
+        <!-- Slide 12: Detailed Differences: Misuse vs Security Use Cases -->
+        <div class="slide">
+            <h1>Detailed Differences: Misuse vs Security Use Cases</h1>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 30px 0; background: white; font-size: 1.1em;">
+                <thead>
+                    <tr style="background: #2c3e50; color: white;">
+                        <th style="padding: 15px; border: 2px solid #34495e; text-align: left; font-weight: bold;">Aspect</th>
+                        <th style="padding: 15px; border: 2px solid #34495e; text-align: left; font-weight: bold;">Misuse Cases</th>
+                        <th style="padding: 15px; border: 2px solid #34495e; text-align: left; font-weight: bold;">Security Use Cases</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: #f8f9fa;">
+                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #2c3e50;">Usage</td>
+                        <td style="padding: 12px; border: 1px solid #ddd;">Analyze and specify security threats</td>
+                        <td style="padding: 12px; border: 1px solid #ddd;">Analyze and specify security requirements</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #2c3e50; background: #f8f9fa;">Success criterion</td>
+                        <td style="padding: 12px; border: 1px solid #ddd;">Attacker succeeds</td>
+                        <td style="padding: 12px; border: 1px solid #ddd;">Application succeeds</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #2c3e50;">Produced by</td>
+                        <td style="padding: 12px; border: 1px solid #ddd;">Security team</td>
+                        <td style="padding: 12px; border: 1px solid #ddd;">Security team</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #2c3e50; background: #f8f9fa;">Used by</td>
+                        <td style="padding: 12px; border: 1px solid #ddd;">Security team</td>
+                        <td style="padding: 12px; border: 1px solid #ddd;">Requirements team</td>
+                    </tr>
+                    <tr style="background: #f8f9fa;">
+                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #2c3e50;">External actors</td>
+                        <td style="padding: 12px; border: 1px solid #ddd;">Attacker, user</td>
+                        <td style="padding: 12px; border: 1px solid #ddd;">User</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold; color: #2c3e50; background: #f8f9fa;">Driven by</td>
+                        <td style="padding: 12px; border: 1px solid #ddd;">Asset vulnerability analysis<br>Threat analysis</td>
+                        <td style="padding: 12px; border: 1px solid #ddd;">Misuse cases</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Slide 13: Design & Architecture -->
+        <div class="slide">
+            <h1>Design & Architecture Phase</h1>
+            
+            <div class="warning-box">
+                <p><strong>Fundamental Principle:</strong> The architecture and design of a system significantly influence its overall security. If the core design is flawed, no amount of secure coding can fix it.</p>
+            </div>
+            
+            <h2>🔧 Secure Design Tactics</h2>
+            <div class="process-flow">
+                <div class="process-step">RESIST<br>Attacks</div>
+                <div class="process-step">DETECT<br>Intrusions</div>
+                <div class="process-step">RECOVER<br>From Incidents</div>
+            </div>
+            
+            <h3>🏢 Compartmentalization Example: OpenSSH</h3>
+            <div class="example-box">
+                <p><strong>Architecture Strategy:</strong> OpenSSH divides system functionality into distinct intercommunicating subsystems:</p>
+                <ul>
+                    <li><strong>Privilege Separation:</strong> Different components run with minimal required privileges</li>
+                    <li><strong>Process Isolation:</strong> Critical operations isolated in separate processes</li>
+                    <li><strong>Attack Surface Reduction:</strong> Each component has limited exposure to external threats</li>
+                    <li><strong>Blast Radius Containment:</strong> If one component is compromised, damage is contained</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 13: Saltzer's 8 Security Principles -->
+        <div class="slide">
+            <h1>Saltzer's 8 Security Principles</h1>
+            
+            <p style="text-align: center; margin-bottom: 30px;"><em>Foundational guidelines from Saltzer and Schroeder for secure system design</em></p>
+            
+            <div class="principle-grid">
+                <div class="principle-card">
+                    <div class="principle-title">🔒 Least Privilege</div>
+                    <p>Give programs/users only the minimum privileges necessary to perform their specific job functions</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">⚙️ Economy of Mechanism</div>
+                    <p>Keep security designs as simple and small as possible - complexity breeds vulnerabilities</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">❌ Fail-Safe Defaults</div>
+                    <p>Default access settings should deny access - systems should "fail closed" rather than "fail open"</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🗝️ Separation of Privilege</div>
+                    <p>Require multiple keys/conditions to unlock critical functions - no single point of failure</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🔍 Complete Mediation</div>
+                    <p>Check every access attempt to every resource, every time - no exceptions or shortcuts</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">📖 Open Design</div>
+                    <p>Security mechanisms shouldn't depend on secrecy of design - "security through obscurity" is weak</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🔗 Least Common Mechanism</div>
+                    <p>Minimize shared components that could become single points of failure across security boundaries</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">👤 Psychological Acceptability</div>
+                    <p>Security mechanisms must be user-friendly - if too complex, users will find workarounds</p>
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <p><strong>Real-World Application:</strong> A banking system implements least privilege by giving tellers access only to customer account viewing, not administrative functions, while requiring dual approval (separation of privilege) for large transactions.</p>
+            </div>
+        </div>
+
+        <!-- Slide 14: Threat Modeling Process -->
+        <div class="slide">
+            <h1>Threat Modeling Process</h1>
+            
+            <div class="highlight">
+                <p><strong>Purpose:</strong> A structured approach to systematically identify, understand, and mitigate potential security threats before they become vulnerabilities.</p>
+            </div>
+            
+            <h2>📋 Six-Step Process</h2>
+            <div class="process-flow" style="flex-direction: column;">
+                <div class="process-step" style="width: 300px;">1. 💎 Identify Assets</div>
+                <div class="process-step" style="width: 300px;">2. 🏗️ Create Architecture Overview</div>
+                <div class="process-step" style="width: 300px;">3. 🔧 Decompose Application</div>
+                <div class="process-step" style="width: 300px;">4. 🚨 Identify Threats</div>
+                <div class="process-step" style="width: 300px;">5. 📄 Document Threats</div>
+                <div class="process-step" style="width: 300px;">6. ⭐ Rate & Prioritize</div>
+            </div>
+            
+            <h3>🔍 Detailed Breakdown</h3>
+            <div class="example-box">
+                <p><strong>E-Commerce Example:</strong></p>
+                <ul>
+                    <li><strong>Assets:</strong> Customer payment data, personal information, inventory database, order history</li>
+                    <li><strong>Architecture:</strong> Web frontend → API gateway → Microservices → Database cluster</li>
+                    <li><strong>Decomposition:</strong> Trust boundaries between internet/DMZ, DMZ/internal network, application/database</li>
+                    <li><strong>Threats (STRIDE):</strong> Spoofing user identities, Tampering with orders, Information disclosure of payment data</li>
+                    <li><strong>Document Threats:</strong> 
+                        <ul>
+                            <li><strong>Threat T1:</strong> SQL injection via product search - Attacker injects malicious SQL to access customer payment data through unsanitized search parameters</li>
+                            <li><strong>Threat T2:</strong> Session hijacking - Attacker intercepts session tokens over unencrypted connections to impersonate legitimate users</li>
+                        </ul>
+                    </li>
+                    <li><strong>Rate & Prioritize:</strong>
+                        <ul>
+                            <li><strong>T1 Priority: CRITICAL</strong> - High impact (payment data breach) + High likelihood (common attack vector) = Risk Score: 9/10</li>
+                            <li><strong>T2 Priority: HIGH</strong> - Medium impact (account takeover) + Medium likelihood (requires network access) = Risk Score: 6/10</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 15: Attack Surface Analysis -->
+        <div class="slide">
+            <h1>Attack Surface Analysis</h1>
+            
+            <div class="highlight">
+                <p><strong>Definition:</strong> The attack surface represents all entry points, channels, and access rights available to unauthenticated or untrusted users - essentially, every way an attacker could potentially interact with your system.</p>
+            </div>
+            
+            <h2>🎯 Primary Goal: Surface Reduction</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span style="font-size: 2em;">🚪</span><br>
+                    <strong>Close Unused<br>Entry Points</strong>
+                </div>
+                <div class="stat-card">
+                    <span style="font-size: 2em;">🔐</span><br>
+                    <strong>Minimize<br>Privileges</strong>
+                </div>
+                <div class="stat-card">
+                    <span style="font-size: 2em;">🧹</span><br>
+                    <strong>Remove Unnecessary<br>Services</strong>
+                </div>
+            </div>
+            
+            <h2>📊 Analysis Process</h2>
+            <div class="process-flow">
+                <div class="process-step">Map Data<br>Entry Points</div>
+                <div class="process-step">Identify Code<br>Handling Input</div>
+                <div class="process-step">Review User<br>Privileges</div>
+                <div class="process-step">Minimize<br>Exposure</div>
+            </div>
+            
+            <div class="example-box">
+                <p><strong>Web Application Example:</strong></p>
+                <ul>
+                    <li><strong>Entry Points:</strong> Login forms, search boxes, file uploads, API endpoints, contact forms</li>
+                    <li><strong>Input Handling:</strong> Form processors, file parsers, API handlers, database queries</li>
+                    <li><strong>Privilege Review:</strong> Anonymous access, user roles, admin functions, service accounts</li>
+                    <li><strong>Minimization:</strong> Disable unused endpoints, implement least privilege, add input validation</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 15: Secure Coding Standards -->
+        <div class="slide">
+            <h1>Secure Coding Standards</h1>
+            
+            <div class="highlight">
+                <p><strong>Purpose:</strong> Prevent known pitfalls and common programming errors that consistently lead to security vulnerabilities across different applications and platforms.</p>
+            </div>
+            
+            <h2>🏆 CERT Secure Coding Standards</h2>
+            <div class="stats-grid">
+                <div class="stat-card" style="background: linear-gradient(45deg, #FF6B35, #F7931E);">
+                    <span style="font-size: 1.5em; font-weight: bold;">C</span><br>
+                    Memory Management<br>Buffer Overflows
+                </div>
+                <div class="stat-card" style="background: linear-gradient(45deg, #4ECDC4, #44A08D);">
+                    <span style="font-size: 1.5em; font-weight: bold;">Java</span><br>
+                    Object Security<br>Input Validation
+                </div>
+                <div class="stat-card" style="background: linear-gradient(45deg, #A8E6CF, #7FDBDA);">
+                    <span style="font-size: 1.5em; font-weight: bold;">C++</span><br>
+                    RAII Patterns<br>Exception Safety
+                </div>
+            </div>
+            
+            <h3>🔄 Community-Driven Evolution</h3>
+            <ul>
+                <li><strong>📈 Regular Updates:</strong> Standards evolve based on newly discovered vulnerabilities and attack patterns</li>
+                <li><strong>🏢 Industry Adoption:</strong> Major vendors and organizations contribute to and adopt these standards</li>
+                <li><strong>🤖 Automation Support:</strong> Rules can be integrated into static analysis tools and CI/CD pipelines</li>
+                <li><strong>✅ Conformance Checking:</strong> Automated verification ensures consistent application across teams</li>
+            </ul>
+            
+            <div class="example-box">
+                <p><strong>C Standard Example:</strong></p>
+                <p><strong>Rule:</strong> "Do not call signal() from within a signal handler"</p>
+                <p><strong>Rationale:</strong> This can lead to undefined behavior and potential security vulnerabilities</p>
+                <p><strong>Automated Check:</strong> Static analysis tools can flag violations during build process</p>
+            </div>
+        </div>
+
+        <!-- Slide 16: Legacy Code & Secure Wrappers -->
+        <div class="slide">
+            <h1>Secure Wrappers</h1>
+            
+            <div class="warning-box">
+                <p><strong>The Problem:</strong> Vulnerabilities in off-the-shelf software components, third-party libraries, or legacy systems can compromise your entire application's security posture.</p>
+            </div>
+            
+            <h2>🔧 Secure Wrapper Strategy</h2>
+            <div class="highlight">
+                <p><strong>Concept:</strong> Create a "wrapper" layer that intercepts calls to problematic APIs, performing additional security validation before invoking the original vulnerable function.</p>
+            </div>
+            
+            <h3>⚙️ How Secure Wrappers Work</h3>
+            <div class="process-flow">
+                <div class="process-step">Application<br>Call</div>
+                <div class="process-step">Secure<br>Wrapper</div>
+                <div class="process-step">Validation<br>Layer</div>
+                <div class="process-step">Original<br>Function</div>
+            </div>
+            
+            <div class="example-box">
+                <p><strong>File Upload Example:</strong></p>
+                <p><strong>Vulnerable Function:</strong> Legacy file processing library with buffer overflow vulnerability</p>
+                <p><strong>Secure Wrapper:</strong></p>
+                <ul>
+                    <li>Validates file size and type before processing</li>
+                    <li>Sanitizes file names and paths</li>
+                    <li>Implements bounds checking</li>
+                    <li>Logs security-relevant events</li>
+                    <li>Only then calls the original function with safe parameters</li>
+                </ul>
+            </div>
+            
+            <h3>🛠️ Alternative Mitigation Strategies</h3>
+            <div class="principle-grid">
+                <div class="principle-card">
+                    <div class="principle-title">🔗 Static Linking</div>
+                    <p>Avoid shared libraries to prevent DLL injection and version conflicts</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">📦 Sandboxing</div>
+                    <p>Isolate vulnerable components in restricted execution environments</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🔄 Component Replacement</div>
+                    <p>Gradually replace legacy components with secure alternatives</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17: Input Validation Process -->
+        <div class="slide">
+            <h1>The Input Validation Process</h1>
+
+            <div class="warning-box">
+                <p><strong>Fundamental Principle:</strong> Establish clear trust boundaries and treat ALL input from untrusted sources as potentially hostile until proven otherwise.</p>
+            </div>
+            
+            <h2>🛡️ Three-Step Process</h2>
+            <div class="process-flow">
+                <div class="process-step">1. CANONICALIZE<br>& NORMALIZE</div>
+                <div class="process-step">2. WHITELIST<br>VALIDATION</div>
+                <div class="process-step">3. SANITIZE<br>OUTPUT</div>
+            </div>
+            
+            <h3>🔧 Step-by-Step Breakdown</h3>
+            <div class="principle-grid">
+                <div class="principle-card">
+                    <div class="principle-title">📝 1. Canonicalization</div>
+                    <p><strong>Purpose:</strong> Convert input to simplest, standard form</p>
+                    <p><strong>Why:</strong> Prevents encoding-based bypass attacks</p>
+                    <p><strong>Example:</strong> URL decode %3Cscript%3E to &lt;script&gt;</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">✅ 2. Whitelist Validation</div>
+                    <p><strong>Approach:</strong> Define known, safe characters/values</p>
+                    <p><strong>Rule:</strong> Reject everything not explicitly allowed</p>
+                    <p><strong>Example:</strong> Phone numbers: only digits, spaces, hyphens</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🧹 3. Sanitization</div>
+                    <p><strong>Goal:</strong> Remove/encode dangerous content in output</p>
+                    <p><strong>Context:</strong> Different sanitization for HTML, SQL, etc.</p>
+                    <p><strong>Example:</strong> HTML encode &lt; as &amp;lt;</p>
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <p><strong>Complete Example - User Comment System:</strong></p>
+                <ul>
+                    <li><strong>Input:</strong> "Hello! Visit http://evil.com/%3Cscript%3E"</li>
+                    <li><strong>Canonicalize:</strong> "Hello! Visit http://evil.com/&lt;script&gt;"</li>
+                    <li><strong>Validate:</strong> Reject due to &lt;script&gt; tag presence</li>
+                    <li><strong>Alternative:</strong> Accept text, sanitize for HTML display</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 18: Compiler & Tooling -->
+        <div class="slide">
+            <h1>Compiler & Security Tooling</h1>
+            <div class="security-icon">⚙️</div>
+            
+            <div class="highlight">
+                <p><strong>Purpose:</strong> Leverage compiler flags and built-in security features to automatically detect and prevent common security flaws during the compilation process.</p>
+            </div>
+            
+            <h2>🚀 Best Practices</h2>
+            <div class="principle-grid">
+                <div class="principle-card">
+                    <div class="principle-title">⚠️ Enable All Warnings</div>
+                    <p><strong>GCC:</strong> -Wall, -Wextra, -Werror</p>
+                    <p><strong>Purpose:</strong> Catch potential issues early</p>
+                    <p><strong>Rule:</strong> Treat warnings as errors</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🛡️ Stack Protection</div>
+                    <p><strong>GCC:</strong> -fstack-protector-strong</p>
+                    <p><strong>MSVC:</strong> /GS</p>
+                    <p><strong>Feature:</strong> Stack canaries detect buffer overflows</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🔒 Security Flags</div>
+                    <p><strong>MSVC:</strong> /sdl (Security Development Lifecycle)</p>
+                    <p><strong>GCC:</strong> -D_FORTIFY_SOURCE=2</p>
+                    <p><strong>Benefit:</strong> Additional runtime security checks</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🎯 Address Sanitizer</div>
+                    <p><strong>Flag:</strong> -fsanitize=address</p>
+                    <p><strong>Detects:</strong> Buffer overflows, use-after-free</p>
+                    <p><strong>Usage:</strong> Development and testing builds</p>
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <p><strong>Complete GCC Security Build Command:</strong></p>
+                <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px; font-family: monospace;">
+gcc -Wall -Wextra -Werror -fstack-protector-strong \
+    -D_FORTIFY_SOURCE=2 -fPIE -pie -Wl,-z,relro \
+    -Wl,-z,now -o secure_app main.c</pre>
+            </div>
+            
+            <h3>📊 Performance vs Security Trade-offs</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">5-15%</span>
+                    Performance Impact<br>Security Features
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">80%+</span>
+                    Buffer Overflow<br>Detection Rate
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 19: Safe-Secure C/C++ -->
+        <div class="slide">
+            <h1>Safe-Secure C/C++</h1>
+            <div class="security-icon">🔐</div>
+            
+            <div class="highlight">
+                <p><strong>Approach:</strong> A hybrid analysis method that combines static analysis capabilities with dynamic runtime checking to catch vulnerabilities that are difficult to find with either approach alone.</p>
+            </div>
+            
+            <h2>⚙️ How It Works</h2>
+            <div class="process-flow">
+                <div class="process-step">Modified<br>Compiler</div>
+                <div class="process-step">Instrument<br>Code</div>
+                <div class="process-step">Runtime<br>Checks</div>
+                <div class="process-step">Vulnerability<br>Detection</div>
+            </div>
+            
+            <h3>🔍 Key Features</h3>
+            <div class="principle-grid">
+                <div class="principle-card">
+                    <div class="principle-title">📏 Bounds Checking</div>
+                    <p>Automatic array and buffer boundary verification at runtime</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">📊 Performance Overhead</div>
+                    <p>Acceptable performance cost (typically 10-20%) for comprehensive security</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🔄 Gradual Adoption</div>
+                    <p>Can be implemented incrementally across existing codebases</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🎯 Dynamic Detection</div>
+                    <p>Catches vulnerabilities missed by static analysis alone</p>
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <p><strong>Buffer Overflow Detection Example:</strong></p>
+                <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px; font-family: monospace;">
+char buffer[10];
+strcpy(buffer, user_input); // Runtime check detects overflow
+// Safe-Secure C++ automatically instruments this call</pre>
+                <p>The modified compiler adds bounds checking that triggers at runtime if user_input exceeds buffer capacity.</p>
+            </div>
+            
+            <div class="warning-box">
+                <p><strong>Benefit:</strong> Provides a bridge between legacy C/C++ code and modern memory-safe languages, allowing gradual security improvements without complete rewrites.</p>
+            </div>
+        </div>
+
+        <!-- Slide 20: Static Analysis -->
+        <div class="slide">
+            <h1>Static Analysis</h1>
+            <div class="security-icon">🔍</div>
+            
+            <div class="highlight">
+                <p><strong>Static Analysis:</strong> The automated process of analyzing source code without executing it to identify potential security vulnerabilities, coding standard violations, and quality issues.</p>
+            </div>
+            
+            <h2>⚖️ The Challenge</h2>
+            <div class="warning-box">
+                <p><strong>Tool Limitations:</strong></p>
+                <ul>
+                    <li><strong>False Positives:</strong> Tools may flag secure code as vulnerable</li>
+                    <li><strong>False Negatives:</strong> Some real vulnerabilities may go undetected</li>
+                    <li><strong>Tool Variation:</strong> Different analyzers find different types of issues</li>
+                </ul>
+            </div>
+            
+            <h2>🔧 The Solution: Multi-Tool Strategy</h2>
+            <div class="process-flow">
+                <div class="process-step">Tool A<br>Buffer Overflows</div>
+                <div class="process-step">Tool B<br>SQL Injection</div>
+                <div class="process-step">Tool C<br>XSS Vulnerabilities</div>
+                <div class="process-step">Comprehensive<br>Coverage</div>
+            </div>
+            
+            <h3>🏢 SCALe Laboratory</h3>
+            <div class="example-box">
+                <p><strong>Source Code Analysis Laboratory (SCALe):</strong></p>
+                <ul>
+                    <li>Tests code compliance with CERT secure coding standards</li>
+                    <li>Provides benchmarking across multiple static analysis tools</li>
+                    <li>Offers comparative effectiveness studies</li>
+                    <li>Helps organizations select the right toolchain</li>
+                </ul>
+            </div>
+            
+            <h3>📊 Tool Categories</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span style="font-size: 1.5em;">🔍</span><br>
+                    <strong>Pattern Matching</strong><br>
+                    Fast, high false positives
+                </div>
+                <div class="stat-card">
+                    <span style="font-size: 1.5em;">🧠</span><br>
+                    <strong>Data Flow Analysis</strong><br>
+                    Accurate, slower execution
+                </div>
+                <div class="stat-card">
+                    <span style="font-size: 1.5em;">🔬</span><br>
+                    <strong>Formal Methods</strong><br>
+                    Precise, limited scope
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 21: Defense in Depth -->
+        <div class="slide">
+            <h1>Defense in Depth</h1>
+            <div class="security-icon">🏰</div>
+            
+            <div class="highlight">
+                <p><strong>Principle:</strong> Manage security risk through multiple, independent layers of protection. If one layer fails, others continue to provide security coverage.</p>
+            </div>
+            
+            <h2>🛡️ Layered Security Architecture</h2>
+            <div style="text-align: center; margin: 30px 0;">
+                <div style="background: #e74c3c; color: white; padding: 10px; margin: 5px 0; border-radius: 5px;">🌐 Network Security (Firewalls, IDS)</div>
+                <div style="background: #e67e22; color: white; padding: 10px; margin: 5px 0; border-radius: 5px;">🏗️ Application Architecture (Sandboxing)</div>
+                <div style="background: #f39c12; color: white; padding: 10px; margin: 5px 0; border-radius: 5px;">🔒 Access Control (Least Privilege)</div>
+                <div style="background: #27ae60; color: white; padding: 10px; margin: 5px 0; border-radius: 5px;">💻 Implementation (Secure Wrappers)</div>
+                <div style="background: #3498db; color: white; padding: 10px; margin: 5px 0; border-radius: 5px;">✅ Input Validation (Data Filtering)</div>
+            </div>
+            
+            <h3>🔧 Example Implementation Layers</h3>
+            <div class="principle-grid">
+                <div class="principle-card">
+                    <div class="principle-title">📝 Input Validation</div>
+                    <p><strong>Layer:</strong> Implementation</p>
+                    <p><strong>Function:</strong> Filter malicious input at application boundary</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🔐 Least Privilege</div>
+                    <p><strong>Layer:</strong> Design</p>
+                    <p><strong>Function:</strong> Minimize potential damage from compromised accounts</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🛡️ Secure Wrappers</div>
+                    <p><strong>Layer:</strong> Implementation</p>
+                    <p><strong>Function:</strong> Add security to legacy components</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">📦 Sandboxing</div>
+                    <p><strong>Layer:</strong> Architecture</p>
+                    <p><strong>Function:</strong> Isolate potentially vulnerable processes</p>
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <p><strong>Web Application Defense Example:</strong> An attacker attempting SQL injection must bypass: input validation → parameterized queries → database permissions → network segmentation → logging/monitoring</p>
+            </div>
+            
+            <div class="warning-box">
+                <p><strong>Key Rule:</strong> Never rely on a single security strategy - assume that any individual protection mechanism can and will eventually fail.</p>
+            </div>
+        </div>
+
+        <!-- Slide 22: Verification Techniques -->
+        <div class="slide">
+            <h1>Verification Techniques</h1>
+            <div class="security-icon">✅</div>
+            
+            <h2>🔧 Comprehensive Testing Arsenal</h2>
+            
+            <div class="principle-grid">
+                <div class="principle-card">
+                    <div class="principle-title">📝 Static Analysis</div>
+                    <p><strong>Method:</strong> Automated source code review</p>
+                    <p><strong>Finds:</strong> Code-level vulnerabilities, standard violations</p>
+                    <p><strong>When:</strong> During development, before compilation</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🎯 Penetration Testing</div>
+                    <p><strong>Method:</strong> Ethical hacking simulation</p>
+                    <p><strong>Finds:</strong> Exploitable vulnerabilities in running systems</p>
+                    <p><strong>When:</strong> Pre-release, production-like environment</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🎲 Fuzz Testing</div>
+                    <p><strong>Method:</strong> Automated malformed input generation</p>
+                    <p><strong>Finds:</strong> Crashes, unexpected behaviors, input handling flaws</p>
+                    <p><strong>When:</strong> Continuous testing throughout development</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">👁️ Code Audits</div>
+                    <p><strong>Method:</strong> Manual expert source code inspection</p>
+                    <p><strong>Finds:</strong> Subtle logic flaws, architectural issues</p>
+                    <p><strong>When:</strong> Critical milestones, external reviews</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🎯 Attack Surface Reviews</div>
+                    <p><strong>Method:</strong> Periodic exposure assessment</p>
+                    <p><strong>Finds:</strong> Expanding attack vectors, new entry points</p>
+                    <p><strong>When:</strong> Feature releases, system changes</p>
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <p><strong>Integrated Verification Pipeline:</strong> A mature development team might run static analysis on every commit, perform weekly fuzz testing, conduct monthly penetration tests, and schedule quarterly expert code audits.</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">60%</span>
+                    Vulnerabilities Found<br>by Static Analysis
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">30%</span>
+                    Found by<br>Dynamic Testing
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">10%</span>
+                    Require Manual<br>Code Audit
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 23: Developer Checklists & Guidelines -->
+        <div class="slide">
+            <h1>Developer Checklists & Guidelines</h1>
+            <div class="security-icon">✔️</div>
+            
+            <div class="highlight">
+                <p><strong>Purpose:</strong> Provide developers with simple, actionable, and repeatable steps to consistently improve security across all projects and teams.</p>
+            </div>
+            
+            <h2>📋 Essential Security Checklist</h2>
+            
+            <h3>🔧 Build & Compilation</h3>
+            <div class="example-box">
+                <ul>
+                    <li>✅ <strong>Enable all compiler warnings</strong> and treat them as errors</li>
+                    <li>✅ <strong>Use security compilation flags</strong> (stack protection, FORTIFY_SOURCE)</li>
+                    <li>✅ <strong>Configure automated security scanning</strong> in build pipeline</li>
+                    <li>✅ <strong>Verify third-party dependencies</strong> for known vulnerabilities</li>
+                </ul>
+            </div>
+            
+            <h3>🔍 Development Process</h3>
+            <div class="example-box">
+                <ul>
+                    <li>✅ <strong>Integrate static analysis</strong> into CI/CD pipeline</li>
+                    <li>✅ <strong>Write unit tests for edge cases</strong> and malicious inputs</li>
+                    <li>✅ <strong>Perform threat modeling</strong> during all design reviews</li>
+                    <li>✅ <strong>Implement input validation</strong> at all trust boundaries</li>
+                    <li>✅ <strong>Use secure coding standards</strong> for your programming language</li>
+                </ul>
+            </div>
+            
+            <h3>📊 Code Review Checklist</h3>
+            <div class="principle-grid">
+                <div class="principle-card">
+                    <div class="principle-title">🔐 Authentication</div>
+                    <p>Verify strong authentication mechanisms and session management</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🛡️ Authorization</div>
+                    <p>Confirm least privilege implementation and access controls</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">📝 Input Handling</div>
+                    <p>Review all input validation, sanitization, and encoding</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🔒 Data Protection</div>
+                    <p>Verify encryption, secure storage, and data classification</p>
+                </div>
+            </div>
+            
+            <div class="warning-box">
+                <p><strong>Automation Strategy:</strong> Embed these checklist items into automated tools wherever possible - manual checklists are prone to human error under deadline pressure.</p>
+            </div>
+        </div>
+
+        <!-- Slide 24: Independent Reviews -->
+        <div class="slide">
+            <h1>Independent Security Reviews</h1>
+            <div class="security-icon">🔍</div>
+            
+            <div class="highlight">
+                <p><strong>Value Proposition:</strong> Independent security reviews provide fresh perspectives and can identify critical flaws that internal teams miss due to familiarity, assumptions, or organizational blind spots.</p>
+            </div>
+            
+            <h2>👥 Who Conducts Reviews</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span style="font-size: 1.5em;">🏢</span><br>
+                    <strong>External Security Firms</strong><br>
+                    Specialized expertise
+                </div>
+                <div class="stat-card">
+                    <span style="font-size: 1.5em;">🎓</span><br>
+                    <strong>Academic Researchers</strong><br>
+                    Cutting-edge methods
+                </div>
+                <div class="stat-card">
+                    <span style="font-size: 1.5em;">🔄</span><br>
+                    <strong>Internal Red Teams</strong><br>
+                    Continuous assessment
+                </div>
+            </div>
+            
+            <h3>🎯 Review Focus Areas</h3>
+            <div class="principle-grid">
+                <div class="principle-card">
+                    <div class="principle-title">🏗️ Architecture Assessment</div>
+                    <p>Evaluate overall system design for fundamental security flaws</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🎯 Attack Surface Analysis</div>
+                    <p>Ensure attack surface hasn't expanded with new features</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🔍 Implementation Review</div>
+                    <p>Deep dive into critical security-sensitive code sections</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">📊 Threat Model Validation</div>
+                    <p>Verify threat models reflect current system reality</p>
+                </div>
+            </div>
+            
+            <h2>📅 Review Frequency & Triggers</h2>
+            <div class="example-box">
+                <p><strong>Recommended Schedule:</strong></p>
+                <ul>
+                    <li><strong>Annual Reviews:</strong> Comprehensive security posture assessment</li>
+                    <li><strong>Major Release Reviews:</strong> Before significant feature deployments</li>
+                    <li><strong>Incident-Triggered Reviews:</strong> Following security incidents or breaches</li>
+                    <li><strong>Compliance Reviews:</strong> Required by regulations or industry standards</li>
+                </ul>
+            </div>
+            
+            <div class="warning-box">
+                <p><strong>Fresh Eyes Advantage:</strong> External reviewers aren't bound by internal assumptions and can challenge design decisions that internal teams take for granted.</p>
+            </div>
+        </div>
+
+        <!-- Slide 25: Summary -->
+        <div class="slide">
+            <h1>Summary: Building Secure Software</h1>
+            <div class="security-icon">🎯</div>
+            
+            <h2>🔑 Key Takeaways</h2>
+            
+            <div class="principle-grid">
+                <div class="principle-card">
+                    <div class="principle-title">📋 1. Adopt a Process</div>
+                    <p><strong>Integration Strategy:</strong> Embed security into your SDLC using proven frameworks like SDL or TSP-Secure</p>
+                    <p><strong>Result:</strong> Systematic security coverage across all development phases</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🤖 2. Standards & Automation</div>
+                    <p><strong>Leverage Tools:</strong> Use secure coding standards and automated analysis tools</p>
+                    <p><strong>Result:</strong> Early vulnerability detection and prevention</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">🎯 3. Model Threats</div>
+                    <p><strong>Proactive Analysis:</strong> Regular threat modeling and attack surface analysis</p>
+                    <p><strong>Result:</strong> Understanding and mitigation of potential attack vectors</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-title">✅ 4. Verify Everything</div>
+                    <p><strong>Multi-Method Approach:</strong> Combine static analysis, fuzzing, and manual audits</p>
+                    <p><strong>Result:</strong> Comprehensive security validation throughout development</p>
+                </div>
+            </div>
+            
+            <h2>📈 Expected Outcomes</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">90%+</span>
+                    Vulnerability<br>Reduction
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">6-10x</span>
+                    Cost Savings<br>(Early vs Late Fixes)
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">50%+</span>
+                    Faster Incident<br>Response
+                </div>
+            </div>
+            
+            <div class="highlight">
+                <p><strong>The Security Mindset:</strong> Security is not a destination - it's a continuous journey of improvement, learning, and adaptation to emerging threats.</p>
+            </div>
+            
+            <div class="example-box">
+                <p><strong>Next Steps for Your Organization:</strong></p>
+                <ul>
+                    <li>🎓 <strong>Security Training:</strong> Invest in comprehensive security education for all developers</li>
+                    <li>📋 <strong>Process Integration:</strong> Select and implement an appropriate security framework</li>
+                    <li>🔧 <strong>Tool Selection:</strong> Choose and deploy automated security testing tools</li>
+                    <li>📊 <strong>Metrics Establishment:</strong> Define security metrics and tracking mechanisms</li>
+                    <li>🔄 <strong>Continuous Improvement:</strong> Regular assessment and refinement of security practices</li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px;">
+                <h3>🎉 Thank You!</h3>
+                <p><strong>Questions & Discussion</strong></p>
+                <p>Remember: Security is everyone's responsibility</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button class="nav-button" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+            <span class="slide-counter">
+                <span id="currentSlide">1</span> / <span id="totalSlides">25</span>
+            </span>
+            <button class="nav-button" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlideIndex = 0;
+        let slides, totalSlides;
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            document.getElementById('currentSlide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            currentSlideIndex += direction;
+            if (currentSlideIndex < 0) currentSlideIndex = 0;
+            if (currentSlideIndex >= totalSlides) currentSlideIndex = totalSlides - 1;
+            showSlide(currentSlideIndex);
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowLeft') {
+                changeSlide(-1);
+            } else if (event.key === 'ArrowRight') {
+                changeSlide(1);
+            }
+        });
+
+        // Wait for DOM to load before initializing slides
+        window.addEventListener('DOMContentLoaded', function() {
+            slides = document.querySelectorAll('.slide');
+            totalSlides = slides.length;
+            document.getElementById('totalSlides').textContent = totalSlides;
+            showSlide(0);
+        });
+    </script>
+</body>
+</html>
